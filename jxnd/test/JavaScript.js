@@ -34,7 +34,7 @@ client.list({
   }
 
   var loadedImages = 0; // 记录已加载的图片数量
-  var totalImages = Math.min(photos.length, 10); // 设置每次加载的图片数量上限
+  var totalImages = Math.min(photos.length, 5); // 设置每次加载的图片数量上限
 
   // 生成照片墙
   for (var i = 0; i < totalImages; i++) {
@@ -42,8 +42,10 @@ client.list({
 
     // 判断文件类型为图片
     if (photo.size && photo.name.match(/\.jpe?g$|\.png$|\.gif$/i)) {
-      var photoUrl = client.signatureUrl(photo.name, { expires: 3600 }); // 生成URL，有效期为1小时
-      $('#gallery').append('<div class="image"><a href="' + photoUrl + '"><img data-src="' + photoUrl + '"></a></div>'); // 添加到照片墙中
+      var photoUrl = client.signatureUrl(photo.name, {expires: 3600}); // 生成URL，有效期为1小时
+      var thumbnailUrl = client.signatureUrl(photo.name, {expires: 3600, process: 'image/auto-orient,1/quality,q_25'}); // 生成缩略图URL，有效期为1小时
+      $('#gallery').append('<div class="image"><a href="'+ photoUrl +'" ><img src="' + thumbnailUrl + '"></a></div>');
+      
       loadedImages++;
     }
   }
@@ -59,8 +61,9 @@ client.list({
           var photo = photos[i];
 
           if (photo.size && photo.name.match(/\.jpe?g$|\.png$|\.gif$/i)) {
-            var photoUrl = client.signatureUrl(photo.name, { expires: 3600 }); // 生成URL，有效期为1小时
-            $('#gallery').append('<div class="image"><a href="' + photoUrl + '"><img data-src="' + photoUrl + '"></a></div>'); // 添加到照片墙中
+            var photoUrl = client.signatureUrl(photo.name, {expires: 3600}); // 生成URL，有效期为1小时
+            var thumbnailUrl = client.signatureUrl(photo.name, {expires: 3600, process: 'image/auto-orient,1/quality,q_25'}); // 生成缩略图URL，有效期为1小时
+            $('#gallery').append('<div class="image"><a href="'+ photoUrl +'" ><img src="' + thumbnailUrl + '"></a></div>');
             loadedImages++;
           }
         }
@@ -74,9 +77,9 @@ client.list({
 });
 
 $('.gallery').magnificPopup({
-  delegate: 'a',
-  type: 'image',
-  gallery: {
-      enabled: true
+  delegate:'a',
+  type:'image',
+  gallery:{
+      enabled:true
   }
 });

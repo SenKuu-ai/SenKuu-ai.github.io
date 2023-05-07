@@ -9,7 +9,7 @@ var client = new OSS({
 // 获取照片URL列表
 client.list({
   'max-keys': 1000, // 最大返回1000个文件
-  'prefix': 'test/' // 指定获取以'photos/'开头的文件列表
+  'prefix': '2023-4-29-五一武汉行/' // 指定获取以'photos/'开头的文件列表
 }).then(function(result) {
   var photos = result.objects; // 获取文件列表
 

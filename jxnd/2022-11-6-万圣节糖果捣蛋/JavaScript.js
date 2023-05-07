@@ -9,7 +9,7 @@ var client = new OSS({
 // 获取照片URL列表
 client.list({
   'max-keys': 1000,
-  'prefix': '2023-4-29-五一武汉行/'
+  'prefix': '2022-11-6-万圣节糖果捣蛋/'
 }).then(function(result) {
   var photos = result.objects;
 

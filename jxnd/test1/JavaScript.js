@@ -42,8 +42,12 @@ client.list({
 
     // 判断文件类型为图片
     if (photo.size && photo.name.match(/\.jpe?g$|\.png$|\.gif$/i)) {
-      var photoUrl = client.signatureUrl(photo.name, { expires: 3600 }); // 生成URL，有效期为1小时
-      $('#gallery').append('<div class="image"><a href="' + photoUrl + '"><img data-src="' + photoUrl + '"></a></div>'); // 添加到照片墙中
+      var thumbnailUrl = client.signatureUrl(photo.name, {
+        expires: 3600,
+        process: 'image/auto-orient,1/resize,m_lfit,w_200/quality,q_50'
+      }); // 生成缩略图URL，有效期为1小时
+      var fullSizeUrl = client.signatureUrl(photo.name, { expires: 3600 }); // 生成原图URL，有效期为1小时
+      $('#gallery').append('<div class="image"><a href="' + fullSizeUrl + '"><img src="' + thumbnailUrl + '" data-src="' + fullSizeUrl + '"></a></div>'); // 添加到照片墙中
       loadedImages++;
     }
   }
@@ -59,18 +63,43 @@ client.list({
           var photo = photos[i];
 
           if (photo.size && photo.name.match(/\.jpe?g$|\.png$|\.gif$/i)) {
-            var photoUrl = client.signatureUrl(photo.name, { expires: 3600 }); // 生成URL，有效期为1小时
-            $('#gallery').append('<div class="image"><a href="' + photoUrl + '"><img data-src="' + photoUrl + '"></a></div>'); // 添加到照片墙中
+            var thumbnailUrl = client.signatureUrl(photo.name, {
+              expires: 3600,
+              process: 'image/auto-orient,1/resize,m_lfit,w_200/quality,q_50'
+            }); // 生成缩略图URL，有效期为1小时
+            var fullSizeUrl = client.signatureUrl(photo.name, { expires: 3600 }); // 生成原图URL，有效期为1小时
+            $('#gallery').append('<div class="image"><a href="' + fullSizeUrl + '"><img src="' + thumbnailUrl + '" data-src="' + fullSizeUrl + '"></a></div>'); // 添加到照片墙中
             loadedImages++;
           }
         }
+
+        // 执行懒加载函数
+        lazyLoadImages();
       }
     }
-
-    lazyLoadImages();
   });
 
-  lazyLoadImages(); // 初始化页面时加载可见区域内的图片
+  // 懒加载函数
+  function lazyLoadImages() {
+    var images = document.querySelectorAll('.image img');
+    for (var i = 0; i < images.length; i++) {
+      var image = images[i];
+      if (isElementInViewport(image) && !image.src) {
+        image.src = image.getAttribute('data-src');
+      }
+    }
+  }
+
+  // 判断元素是否在可视区域内的函数
+  function isElementInViewport(element) {
+    var rect = element.getBoundingClientRect();
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+  }
 });
 
 $('.gallery').magnificPopup({

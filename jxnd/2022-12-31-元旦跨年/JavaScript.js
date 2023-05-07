@@ -34,7 +34,7 @@ client.list({
   }
 
   var loadedImages = 0; // 记录已加载的图片数量
-  var totalImages = Math.min(photos.length, 10); // 设置每次加载的图片数量上限
+  var totalImages = Math.min(photos.length, 5); // 设置每次加载的图片数量上限
 
   // 生成照片墙
   for (var i = 0; i < totalImages; i++) {
